@@ -7,6 +7,6 @@ import os
 
 current_path = os.getcwd() # finding working or current directory path
 process = subprocess.Popen(["make"], cwd=current_path)
-time.sleep(2)
+time.sleep(5)
 process.terminate()
 
