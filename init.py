@@ -1,6 +1,6 @@
 import zipfile
 import os
-import tarfile,sys,shutil
+import tarfile,sys,shutil,traceback
 import config as cfg
 
 print "extraing zip files"
@@ -22,7 +22,7 @@ if not os.path.exists(directory):
 zip_ref = zipfile.ZipFile( current_path + '/submissions.zip','r')
 zip_ref.extractall(file_path)
 zip_ref.close() # file extracting completed
-print "all files extracted to submission folder"
+
 
 # now, find out documentation file path 
 for item in os.listdir(source_file_path):# loop for docx file into root dir
@@ -53,32 +53,50 @@ for item in os.listdir(file_path):# loop through items in submission dir
         
         # move submission tar file to student specific folder
         shutil.move(tar_file_path, tar_file_new_path)
-        # Now, extract the submission tar file (exsisting files: dec2hex.c, hex2dec.c, Makefile) 
-	print tar_file_new_path
-        tar = tarfile.open(tar_file_new_path)
-	print tar_file_new_path
-	print student_filepath
-        tar.extractall(student_filepath)
-        tar.close()#extracting completed
+        # Now, extract the submission tar file (exsisting files: dec2hex.c, hex2dec.c, Makefile)
+	try:
+            tar = tarfile.open(tar_file_new_path)
+            tar.extractall(student_filepath)
+            tar.close()#extracting completed
+	except:
+	    print 'error path: ' + tar_file_new_path
+	    traceback.print_exc()	    
         
         # copy compile and execution python file to student specific folder
-        shutil.copy2(compile_file_path,student_filepath)
-        shutil.copy2(execution_file_path,student_filepath)
+	try:
+            shutil.copy2(compile_file_path,student_filepath)
+	except IOError as err:
+	    print("IO error: {0}".format(err))
+
+	try:
+            shutil.copy2(execution_file_path,student_filepath)
+	except IOError as err:
+	    print("IO error: {0}".format(err))        
         
         # copy output checking python file to student specific folder
-        shutil.copy2(diff_file_path,student_filepath)
+	try:
+            shutil.copy2(diff_file_path,student_filepath)
+	except IOError as err:
+	    print("IO error: {0}".format(err))         
            
         # copy documentation file to student specific folder
-        shutil.copy2(documentation_file_path,student_filepath)
+	try:
+            shutil.copy2(documentation_file_path,student_filepath)
+	except IOError as err:
+	    print("IO error: {0}".format(err)) 
+        
         
         # copy all output file to student specific folder
         for output_file_path in output_file_path_list:
-            shutil.copy2(output_file_path,student_filepath)
+	    try:
+                shutil.copy2(output_file_path,student_filepath)
+	    except IOError as err:
+	        print("IO error: {0}".format(err))             
     
     else:
         print "Not a tar.gz file: " + item   
 
-
+print "all files extracted to submission folder"
 
 
 
