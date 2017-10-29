@@ -33,11 +33,14 @@ for item in os.listdir(source_file_path):# loop for docx file into root dir
         
 # now, check all tar files and untar then into separated folder
 for item in os.listdir(file_path):# loop through items in submission dir   
-    if (item.endswith("tar.gz")):# check for ".zip" extension 
+    if (item.endswith(".gz")):# check for ".zip" extension 
         # separating student name(firstname and lastname) from tar file(Like:    cse221_Dipanjan_Das_hw0.tar.gz)       
         index_of_dot = item.index('.')
         file_name_without_extension = item[:index_of_dot]
-        student_course = file_name_without_extension.split(cfg.init['course_name'])[1] # extrating student name with course
+        student_course = ''
+        if cfg.init['course_name'] in file_name_without_extension:
+            student_course = file_name_without_extension.split(cfg.init['course_name'])[1] # extrating student name with course 
+        else: student_course = file_name_without_extension # if student does not maintain folder naming convention            
         student_name = student_course.replace(cfg.init['course_num'],'')
         student_filepath = file_path + '/' + student_name
         
@@ -51,7 +54,10 @@ for item in os.listdir(file_path):# loop through items in submission dir
         # move submission tar file to student specific folder
         shutil.move(tar_file_path, tar_file_new_path)
         # Now, extract the submission tar file (exsisting files: dec2hex.c, hex2dec.c, Makefile) 
+	print tar_file_new_path
         tar = tarfile.open(tar_file_new_path)
+	print tar_file_new_path
+	print student_filepath
         tar.extractall(student_filepath)
         tar.close()#extracting completed
         
@@ -70,7 +76,7 @@ for item in os.listdir(file_path):# loop through items in submission dir
             shutil.copy2(output_file_path,student_filepath)
     
     else:
-        print "Not a tar.gz file: '%s '" % sys.argv[0]    
+        print "Not a tar.gz file: " + item   
 
 
 
