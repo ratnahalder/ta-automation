@@ -1,5 +1,5 @@
 import zipfile
-import os
+import os,subprocess
 import tarfile,sys,shutil,traceback
 import config as cfg
 
@@ -60,7 +60,13 @@ for item in os.listdir(file_path):# loop through items in submission dir
             tar.close()#extracting completed
 	except:
 	    print 'error path: ' + tar_file_new_path
-	    traceback.print_exc()	    
+	    traceback.print_exc()
+	    print '\n\n'	
+	    retcode = subprocess.call(['tar', '-xvf', tar_file_new_path, '-C', student_filepath])
+	    if retcode == 0:
+    		print "Extracted successfully with second process"
+	    else:
+    		print "Not extracted successfully with second process also"	    
         
         # copy compile and execution python file to student specific folder
 	try:
